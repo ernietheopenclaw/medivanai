@@ -1,8 +1,12 @@
-"""Chest X-ray classifier."""
+"""Chest X-ray classifier — ViT fine-tuned for thoracic pathology for MediVan AI."""
 import random
+import logging
 from PIL import Image
 from backend.config import MOCK_MODE, CHEST_MODEL
 
+logger = logging.getLogger(__name__)
+
+# Common CXR findings
 CLASSES = ["normal", "cardiomegaly", "pneumonia", "pleural effusion", "atelectasis", "pneumothorax", "tuberculosis"]
 
 RISK_MAP = {
@@ -15,40 +19,118 @@ RISK_MAP = {
     "tuberculosis": "high",
 }
 
+# Map common model output labels to our canonical names
+LABEL_VARIANTS = {
+    "normal": "normal", "no finding": "normal", "no findings": "normal", "healthy": "normal",
+    "cardiomegaly": "cardiomegaly", "enlarged heart": "cardiomegaly", "cardiac enlargement": "cardiomegaly",
+    "pneumonia": "pneumonia", "lung opacity": "pneumonia", "consolidation": "pneumonia", "infiltrate": "pneumonia",
+    "pleural effusion": "pleural effusion", "effusion": "pleural effusion", "pleural_effusion": "pleural effusion",
+    "atelectasis": "atelectasis", "collapse": "atelectasis", "lung collapse": "atelectasis",
+    "pneumothorax": "pneumothorax",
+    "tuberculosis": "tuberculosis", "tb": "tuberculosis", "pulmonary tuberculosis": "tuberculosis",
+    # Additional CheXpert/ChestX-ray14 labels
+    "edema": "pleural effusion",
+    "consolidation": "pneumonia",
+    "mass": "pneumonia",  # fallback
+    "nodule": "normal",  # small nodules often incidental
+    "emphysema": "normal",  # chronic, not acute
+    "fibrosis": "normal",
+    "hernia": "normal",
+}
+
 _model = None
 _processor = None
+_device = "cpu"
 
 
 def _load():
-    global _model, _processor
+    """Load the pretrained chest X-ray ViT model."""
+    global _model, _processor, _device
     if _model is not None:
         return
-    from transformers import ViTForImageClassification, ViTImageProcessor
-    _processor = ViTImageProcessor.from_pretrained(CHEST_MODEL)
-    _model = ViTForImageClassification.from_pretrained(CHEST_MODEL)
-    _model.eval()
+
+    import torch
+    from transformers import AutoModelForImageClassification, AutoImageProcessor
+
+    if torch.cuda.is_available():
+        _device = "cuda"
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        _device = "mps"
+    else:
+        _device = "cpu"
+
+    logger.info(f"Loading chest classifier '{CHEST_MODEL}' on {_device}")
+    _processor = AutoImageProcessor.from_pretrained(CHEST_MODEL)
+    _model = AutoModelForImageClassification.from_pretrained(CHEST_MODEL)
+    _model = _model.to(_device).eval()
+
+    id2label = _model.config.id2label or {}
+    logger.info(f"Chest model labels: {id2label}")
+    logger.info(f"Chest classifier loaded ({sum(p.numel() for p in _model.parameters())/1e6:.1f}M params)")
+
+
+def _normalize_label(label: str) -> str:
+    """Normalize model output label to our canonical class names."""
+    label_lower = label.lower().strip()
+    if label_lower in LABEL_VARIANTS:
+        return LABEL_VARIANTS[label_lower]
+    for key, val in LABEL_VARIANTS.items():
+        if key in label_lower:
+            return val
+    return label
 
 
 def classify(image: Image.Image) -> dict:
+    """Classify a chest X-ray image."""
     if MOCK_MODE:
         return _mock()
+
     _load()
     import torch
-    inputs = _processor(images=image, return_tensors="pt")
-    with torch.no_grad():
-        logits = _model(**inputs).logits
-        probs = torch.softmax(logits, dim=-1)[0]
-    id2label = _model.config.id2label
-    results = {id2label.get(i, f"class_{i}"): float(probs[i]) for i in range(len(probs))}
-    best = max(results, key=results.get)
-    risk = RISK_MAP.get(best.lower(), "moderate")
-    return {
-        "classification": best,
-        "confidence": round(results[best], 4),
-        "risk_level": risk,
-        "all_scores": {k: round(v, 4) for k, v in sorted(results.items(), key=lambda x: -x[1])[:5]},
-        "recommendation": _recommendation(best.lower()),
-    }
+
+    try:
+        inputs = _processor(images=image, return_tensors="pt")
+        inputs = {k: v.to(_device) for k, v in inputs.items()}
+
+        with torch.no_grad():
+            outputs = _model(**inputs)
+            logits = outputs.logits
+            probs = torch.softmax(logits, dim=-1)[0]
+
+        id2label = _model.config.id2label or {i: f"class_{i}" for i in range(len(probs))}
+
+        raw_results = {}
+        canonical_results = {}
+        for i in range(len(probs)):
+            raw_label = id2label.get(i, f"class_{i}")
+            norm_label = _normalize_label(raw_label)
+            score = float(probs[i])
+            raw_results[raw_label] = score
+            canonical_results[norm_label] = canonical_results.get(norm_label, 0.0) + score
+
+        best = max(canonical_results, key=canonical_results.get)
+        conf = canonical_results[best]
+        risk = RISK_MAP.get(best, "moderate")
+
+        return {
+            "classification": best,
+            "confidence": round(conf, 4),
+            "risk_level": risk,
+            "all_scores": {k: round(v, 4) for k, v in sorted(canonical_results.items(), key=lambda x: -x[1])[:7]},
+            "raw_model_output": {k: round(v, 4) for k, v in sorted(raw_results.items(), key=lambda x: -x[1])[:5]},
+            "recommendation": _recommendation(best),
+        }
+
+    except Exception as e:
+        logger.error(f"Chest classification failed: {e}", exc_info=True)
+        return {
+            "classification": "error",
+            "confidence": 0,
+            "risk_level": "moderate",
+            "all_scores": {},
+            "recommendation": f"Classification failed: {e}. Please re-upload or consult radiologist.",
+            "error": str(e),
+        }
 
 
 def _mock() -> dict:
@@ -68,13 +150,13 @@ def _mock() -> dict:
 
 def _recommendation(cls: str) -> str:
     recs = {
-        "normal": "No acute findings. Routine follow-up as clinically indicated.",
-        "cardiomegaly": "Enlarged cardiac silhouette noted. Recommend echocardiogram and cardiology referral.",
-        "pneumonia": "Consolidation pattern consistent with pneumonia. Start empiric antibiotics, consider sputum culture.",
-        "pleural effusion": "Fluid collection noted. Consider thoracentesis if large. Evaluate underlying cause.",
-        "atelectasis": "Lung collapse pattern. Encourage incentive spirometry. Rule out obstruction.",
-        "pneumothorax": "URGENT: Air in pleural space. Assess for tension pneumothorax. May require chest tube.",
-        "tuberculosis": "Pattern suggestive of TB. Isolate patient. Obtain sputum AFB and start workup.",
+        "normal": "No acute cardiopulmonary findings. Routine follow-up as clinically indicated.",
+        "cardiomegaly": "Enlarged cardiac silhouette (CTR > 0.5). Recommend echocardiogram, BNP levels, and cardiology referral. Evaluate for heart failure.",
+        "pneumonia": "Consolidation/opacity pattern consistent with pneumonia. Start empiric antibiotics per guidelines. Consider sputum culture and CRP/procalcitonin.",
+        "pleural effusion": "Fluid collection in pleural space. Consider thoracentesis if large or symptomatic. Evaluate for CHF, infection, malignancy.",
+        "atelectasis": "Lung collapse pattern noted. Encourage incentive spirometry and deep breathing exercises. Rule out endobronchial obstruction if persistent.",
+        "pneumothorax": "URGENT: Air in pleural space detected. Assess for tension pneumothorax (tracheal deviation, hypotension). May require emergent chest tube decompression.",
+        "tuberculosis": "Radiographic pattern suggestive of TB (upper lobe infiltrates/cavitation). ISOLATE patient immediately. Obtain sputum AFB x3, start TB workup per CDC guidelines.",
     }
     return recs.get(cls, "Consult radiologist for further evaluation.")
 
@@ -82,5 +164,9 @@ def _recommendation(cls: str) -> str:
 def get_status() -> dict:
     if MOCK_MODE:
         return {"name": "Chest X-ray Classifier", "status": "ready (mock)", "model": CHEST_MODEL}
-    return {"name": "Chest X-ray Classifier", "status": "loaded" if _model else "not_loaded", "model": CHEST_MODEL}
-
+    return {
+        "name": "Chest X-ray Classifier",
+        "status": "loaded" if _model else "not_loaded",
+        "model": CHEST_MODEL,
+        "device": _device if _model else None,
+    }
