@@ -6,7 +6,7 @@ NIM_ENDPOINT = os.getenv("NIM_ENDPOINT", "http://localhost:8080/v1")
 NIM_MODEL = os.getenv("NIM_MODEL", "meta/llama-3.1-8b-instruct")
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "8000"))
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/tmp/medivan_uploads")
+UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/tmp/medivanai_uploads")
 MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB
 
 # Model paths (HuggingFace model IDs)

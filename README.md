@@ -2,17 +2,17 @@
 
 **Offline multi-modal medical diagnostic screening for underserved communities.**
 
-MediVan turns a Dell Pro Max GB10 into a portable AI-powered screening station. A clinician in a mobile health van connects their phone via Tailscale and captures medical images. On-device AI models identify the image type, classify findings, and generate a holistic patient report — all without internet access.
+MediVan AI turns a Dell Pro Max GB10 into a portable AI-powered screening station. A clinician in a mobile health van connects their phone via Tailscale and captures medical images. On-device AI models identify the image type, classify findings, and generate a holistic patient report — all without internet access.
 
 > 🏆 Built for the Dell Pro Max GB10 Hackathon at NYU Center for Data Science
 
 ---
 
-## 🎯 Why MediVan?
+## 🎯 Why MediVan AI?
 
 - **60M+ Americans** live in medically underserved areas
 - Mobile health vans bridge the gap — but lack diagnostic AI
-- MediVan brings specialist-level screening to the point of care
+- MediVan AI brings specialist-level screening to the point of care
 - **Zero cloud dependency** — all inference runs on the GB10
 - **HIPAA-aligned** — patient images never leave the device
 
@@ -141,7 +141,7 @@ Tailscale provides:
 
 ## 📋 Demo Flow
 
-1. **Open MediVan** on phone browser
+1. **Open MediVan AI** on phone browser
 2. **Start Session** — creates a new patient screening
 3. **Capture/Upload** a skin lesion photo → AI classifies (e.g., "melanocytic nevi, 87% confidence, Low Risk")
 4. **Capture/Upload** a chest X-ray → AI classifies (e.g., "pneumonia, 82% confidence, High Risk")
@@ -163,7 +163,7 @@ Tailscale provides:
 ## 📁 Project Structure
 
 ```
-medivan/
+medivanai/
 ├── backend/
 │   ├── main.py              # FastAPI application
 │   ├── config.py             # Configuration
@@ -192,7 +192,7 @@ medivan/
 
 ## ⚠️ Disclaimer
 
-MediVan is an **AI-assisted screening tool** for research and demonstration purposes. It does **NOT** constitute medical diagnosis. All findings must be confirmed by a qualified healthcare provider. Clinical decisions should be based on comprehensive evaluation, not AI screening alone.
+MediVan AI is an **AI-assisted screening tool** for research and demonstration purposes. It does **NOT** constitute medical diagnosis. All findings must be confirmed by a qualified healthcare provider. Clinical decisions should be based on comprehensive evaluation, not AI screening alone.
 
 ---
 

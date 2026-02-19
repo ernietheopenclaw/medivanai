@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
-  title: 'MediVan — Mobile Diagnostic Hub',
+  title: 'MediVan AI — Mobile Diagnostic Hub',
   description: 'Offline multi-modal medical diagnostic screening',
   manifest: '/manifest.json',
 };

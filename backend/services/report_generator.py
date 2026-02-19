@@ -9,7 +9,7 @@ def generate_report(session: dict) -> str:
         return _mock_report(session)
 
     findings_text = _format_findings(session["findings"])
-    prompt = f"""You are a clinical decision support system for a mobile health screening unit (MediVan).
+    prompt = f"""You are a clinical decision support system for a mobile health screening unit (MediVan AI).
 Generate a structured patient screening report based on these findings.
 
 Session ID: {session['id']}
@@ -92,7 +92,7 @@ def _mock_report(session: dict) -> str:
 """
 
     return f"""═══════════════════════════════════════════════
-  MEDIVAN — PATIENT SCREENING REPORT
+  MEDIVAN AI — PATIENT SCREENING REPORT
   Mobile Health Unit | {now}
   Session ID: {session['id']}
 ═══════════════════════════════════════════════

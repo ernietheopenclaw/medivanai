@@ -1,4 +1,4 @@
-"""MediVan — FastAPI backend."""
+"""MediVan AI — FastAPI backend."""
 import io
 import os
 from fastapi import FastAPI, UploadFile, File, HTTPException

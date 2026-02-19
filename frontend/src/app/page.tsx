@@ -15,7 +15,7 @@ export default function Home() {
       const data = await res.json();
       router.push(`/session/?id=${data.id}`);
     } catch (e) {
-      alert('Failed to connect to MediVan server');
+      alert('Failed to connect to MediVan AI server');
     } finally {
       setLoading(false);
     }
@@ -27,7 +27,7 @@ export default function Home() {
         {/* Logo */}
         <div className="space-y-2">
           <div className="text-6xl">🏥</div>
-          <h1 className="text-3xl font-bold text-primary">MediVan</h1>
+          <h1 className="text-3xl font-bold text-primary">MediVan AI</h1>
           <p className="text-gray-500 text-lg">Mobile Diagnostic Hub</p>
         </div>
 

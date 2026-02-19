@@ -1,2 +1,2 @@
-# MediVan backend
+# MediVan AI backend
 

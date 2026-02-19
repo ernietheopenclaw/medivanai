@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  medivan-api:
+  medivanai-api:
     build:
       context: .
       dockerfile: backend/Dockerfile
@@ -11,7 +11,7 @@ services:
       - MOCK_MODE=${MOCK_MODE:-false}
       - NIM_ENDPOINT=http://nim-llm:8000/v1
     volumes:
-      - /tmp/medivan_uploads:/tmp/medivan_uploads
+      - /tmp/medivanai_uploads:/tmp/medivanai_uploads
     deploy:
       resources:
         reservations:

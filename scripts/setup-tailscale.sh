@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-echo "=== MediVan Tailscale Setup ==="
+echo "=== MediVan AI Tailscale Setup ==="
 
 # Install Tailscale
 if ! command -v tailscale &> /dev/null; then
@@ -17,7 +17,7 @@ TS_IP=$(tailscale ip -4)
 echo ""
 echo "=== Tailscale Ready ==="
 echo "Tailscale IP: $TS_IP"
-echo "MediVan URL:  http://$TS_IP:8000"
+echo "MediVan AI URL:  http://$TS_IP:8000"
 echo ""
 echo "Optional: Enable HTTPS with:"
 echo "  sudo tailscale cert $TS_IP"

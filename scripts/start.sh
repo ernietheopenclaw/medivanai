@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-echo "=== Starting MediVan ==="
+echo "=== Starting MediVan AI ==="
 
 # Check Tailscale
 if command -v tailscale &> /dev/null; then
@@ -16,7 +16,7 @@ echo "Local IP: $LOCAL_IP"
 
 # Start server
 echo ""
-echo "Starting MediVan server..."
+echo "Starting MediVan AI server..."
 echo "  Local:     http://$LOCAL_IP:8000"
 if [ "$TS_IP" != "not connected" ] && [ -n "$TS_IP" ]; then
     echo "  Tailscale: http://$TS_IP:8000"
