@@ -21,7 +21,7 @@ export default function ModelStatus() {
           {models.map((m, i) => (
             <div key={i} className="flex items-center justify-between text-xs px-3 py-1.5 bg-gray-50 rounded">
               <span className="font-medium">{m.name}</span>
-              <span className={m.status === 'loaded' ? 'text-risk-low' : m.status === 'mock' ? 'text-risk-moderate' : 'text-gray-400'}>
+              <span className={(m.status === 'loaded' || m.status.startsWith('ready')) ? 'text-risk-low' : 'text-gray-400'}>
                 {m.status}
               </span>
             </div>

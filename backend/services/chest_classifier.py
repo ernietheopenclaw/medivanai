@@ -81,6 +81,6 @@ def _recommendation(cls: str) -> str:
 
 def get_status() -> dict:
     if MOCK_MODE:
-        return {"name": "Chest X-ray Classifier", "status": "mock", "model": CHEST_MODEL}
+        return {"name": "Chest X-ray Classifier", "status": "ready (mock)", "model": CHEST_MODEL}
     return {"name": "Chest X-ray Classifier", "status": "loaded" if _model else "not_loaded", "model": CHEST_MODEL}
 

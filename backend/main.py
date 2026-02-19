@@ -16,6 +16,36 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+
+@app.on_event("startup")
+async def load_models():
+    """Eagerly load all models on startup (skipped in mock mode)."""
+    if MOCK_MODE:
+        print("[MediVan AI] Running in MOCK MODE — no models loaded, using simulated results")
+        return
+    print("[MediVan AI] Loading models...")
+    try:
+        router._load_model()
+        print("  ✓ CLIP Router loaded")
+    except Exception as e:
+        print(f"  ✗ CLIP Router failed: {e}")
+    try:
+        skin_classifier._load()
+        print("  ✓ Skin Classifier loaded")
+    except Exception as e:
+        print(f"  ✗ Skin Classifier failed: {e}")
+    try:
+        chest_classifier._load()
+        print("  ✓ Chest X-ray Classifier loaded")
+    except Exception as e:
+        print(f"  ✗ Chest X-ray Classifier failed: {e}")
+    try:
+        eye_classifier._load()
+        print("  ✓ DR Classifier loaded")
+    except Exception as e:
+        print(f"  ✗ DR Classifier failed: {e}")
+    print("[MediVan AI] Model loading complete")
+
 CLASSIFIERS = {
     "skin_lesion": skin_classifier.classify,
     "chest_xray": chest_classifier.classify,

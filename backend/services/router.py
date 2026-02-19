@@ -75,7 +75,7 @@ def _mock_route(filename: str) -> dict:
 
 def get_status() -> dict:
     if MOCK_MODE:
-        return {"name": "CLIP Router", "status": "mock", "model": CLIP_MODEL}
+        return {"name": "CLIP Router", "status": "ready (mock)", "model": CLIP_MODEL}
     return {
         "name": "CLIP Router",
         "status": "loaded" if _model is not None else "not_loaded",

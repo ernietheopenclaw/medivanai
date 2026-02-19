@@ -70,6 +70,6 @@ def _recommendation(grade: str) -> str:
 
 def get_status() -> dict:
     if MOCK_MODE:
-        return {"name": "DR Classifier", "status": "mock", "model": EYE_MODEL}
+        return {"name": "DR Classifier", "status": "ready (mock)", "model": EYE_MODEL}
     return {"name": "DR Classifier", "status": "loaded" if _model else "not_loaded", "model": EYE_MODEL}
 
