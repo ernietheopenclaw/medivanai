@@ -11,7 +11,7 @@ from backend.config import MOCK_MODE, HOST, PORT, UPLOAD_DIR
 from backend.services import router, skin_classifier, chest_classifier, eye_classifier
 from backend.services import report_generator, session_manager, rag
 
-app = FastAPI(title="MediVan", version="1.0.0")
+app = FastAPI(title="MediVan AI", version="1.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -142,3 +142,4 @@ if os.path.isdir(FRONTEND_DIR):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("backend.main:app", host=HOST, port=PORT, reload=True)
+

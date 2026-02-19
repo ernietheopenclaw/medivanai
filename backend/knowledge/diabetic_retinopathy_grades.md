@@ -20,3 +20,4 @@ Neovascularization of disc or elsewhere, vitreous/preretinal hemorrhage. Immedia
 - Blood pressure control (<130/80) is critical
 - Lipid management reduces hard exudate formation
 - Pregnancy may accelerate DR — screen each trimester
+

@@ -41,3 +41,4 @@ def set_report(sid: str, report: str):
 
 def list_sessions() -> list:
     return list(_sessions.values())
+

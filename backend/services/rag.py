@@ -68,3 +68,4 @@ def _mock_retrieve(query: str) -> list[str]:
         if len(results) >= 3:
             break
     return results[:3] if results else _chunks[:2]
+

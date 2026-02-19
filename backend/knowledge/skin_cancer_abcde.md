@@ -27,3 +27,4 @@ Any change in size, shape, color, elevation, or new symptom (bleeding, itching, 
 - Family history of melanoma
 - Personal history of melanoma or other skin cancers
 - Immunosuppression
+

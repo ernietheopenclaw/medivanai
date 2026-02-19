@@ -81,3 +81,4 @@ def get_status() -> dict:
         "status": "loaded" if _model is not None else "not_loaded",
         "model": CLIP_MODEL,
     }
+

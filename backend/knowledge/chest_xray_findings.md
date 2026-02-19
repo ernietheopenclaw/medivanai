@@ -20,3 +20,4 @@ Upper lobe predominant infiltrates, cavitation, tree-in-bud pattern. Obtain sput
 
 ## Normal Chest X-ray
 Clear lung fields, normal cardiac silhouette, no effusions, intact bony structures. Document as normal for baseline comparison.
+

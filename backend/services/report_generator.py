@@ -142,3 +142,4 @@ def _priority_referrals(findings: list) -> str:
     for i, f in enumerate(mod, len(high) + 1):
         lines.append(f"  {i}. [ROUTINE] {f['image_type'].replace('_',' ').title()}: {f['classification']} — Follow-up within 2-4 weeks")
     return "\n".join(lines) if lines else "  No urgent referrals indicated."
+

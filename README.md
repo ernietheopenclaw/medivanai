@@ -94,7 +94,7 @@ MediVan turns a Dell Pro Max GB10 into a portable AI-powered screening station. 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/ernietheopenclaw/medivan.git
+git clone https://github.com/ernietheopenclaw/medivanai.git
 cd medivan
 
 # Backend
@@ -199,3 +199,4 @@ MediVan is an **AI-assisted screening tool** for research and demonstration purp
 ## 📄 License
 
 MIT — see [LICENSE](LICENSE)
+

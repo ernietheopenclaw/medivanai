@@ -89,3 +89,4 @@ def get_status() -> dict:
     if MOCK_MODE:
         return {"name": "Skin Classifier", "status": "mock", "model": SKIN_MODEL}
     return {"name": "Skin Classifier", "status": "loaded" if _model else "not_loaded", "model": SKIN_MODEL}
+

@@ -16,3 +16,4 @@ export default function RiskGauge({ level }: { level: string }) {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"""MediVan configuration."""
+"""MediVan AI configuration."""
 import os
 
 MOCK_MODE = os.getenv("MOCK_MODE", "true").lower() in ("true", "1", "yes")
@@ -18,3 +18,4 @@ EYE_MODEL = os.getenv("EYE_MODEL", "rafalosa/diabetic-retinopathy-224-procnorm-v
 # RAG
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 KNOWLEDGE_DIR = os.path.join(os.path.dirname(__file__), "knowledge")
+

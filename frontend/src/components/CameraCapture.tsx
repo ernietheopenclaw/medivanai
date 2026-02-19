@@ -35,3 +35,4 @@ export default function CameraCapture({ onCapture }: { onCapture: (file: File) =
     </div>
   );
 }
+

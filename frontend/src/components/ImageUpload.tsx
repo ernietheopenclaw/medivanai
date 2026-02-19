@@ -26,3 +26,4 @@ export default function ImageUpload({ onUpload }: { onUpload: (file: File) => vo
     </div>
   );
 }
+

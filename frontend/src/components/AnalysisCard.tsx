@@ -50,3 +50,4 @@ export default function AnalysisCard({ finding, index }: { finding: any; index: 
     </div>
   );
 }
+
