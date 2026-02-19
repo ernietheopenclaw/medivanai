@@ -95,7 +95,7 @@ MediVan AI turns a Dell Pro Max GB10 into a portable AI-powered screening statio
 
 ```bash
 git clone https://github.com/ernietheopenclaw/medivanai.git
-cd medivan
+cd medivanai
 
 # Backend
 pip install -r backend/requirements.txt
